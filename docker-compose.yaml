@@ -1,0 +1,42 @@
+version: '3'
+services:
+  php56:
+    container_name: php56
+    build:
+      context: .
+      dockerfile: ./docker-files/PHP56.Dockerfile
+    ports:
+      - "8056:80"
+    volumes:
+      - ./www/php56:/var/www/html/
+
+  php74:
+    container_name: php74
+    build:
+      context: .
+      dockerfile: ./docker-files/PHP74.Dockerfile
+    ports:
+      - "8074:80"
+    volumes:
+      - ./www/php74:/var/www/html/
+
+  php82:
+    container_name: php82
+    build:
+      context: .
+      dockerfile: ./docker-files/PHP82.Dockerfile
+    ports:
+      - "8082:80"
+    volumes:
+      - ./www/php82:/var/www/html/
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.9.4
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mariadb-data:/var/lib/mariadb
+    ports:
+      - 3300:3306
