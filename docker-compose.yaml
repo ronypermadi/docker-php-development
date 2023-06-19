@@ -1,14 +1,5 @@
 version: '3'
 services:
-  php56:
-    container_name: php56
-    build:
-      context: .
-      dockerfile: ./docker-files/PHP56.Dockerfile
-    ports:
-      - "8056:80"
-    volumes:
-      - ./www/php56:/var/www/html/
 
   php74:
     container_name: php74
