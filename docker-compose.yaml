@@ -1,6 +1,16 @@
 version: '3'
 services:
 
+  php56:
+    container_name: php56
+    build:
+      context: .
+      dockerfile: ./docker-files/PHP56.Dockerfile
+    ports:
+      - "8056:80"
+    volumes:
+      - ./www/php56:/var/www/html/
+
   php74:
     container_name: php74
     build:
@@ -24,10 +34,30 @@ services:
   mariadb:
     container_name: mariadb
     image: mariadb:10.9.4
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./mariadb-data:/var/lib/mariadb
     ports:
       - 3300:3306
+
+  pgsql:
+    container_name: pgsql
+    image: postgres:15.3
+    environment:
+      POSTGRES_PASSWORD: root
+    volumes:
+      - ./pgsql-data:/var/lib/pgsql
+    ports:
+      - 5400:5432
+
+  sqlsrv:
+    container_name: sqlsrv
+    image: microsoft/mssql-server-linux:2017-latest
+    volumes:
+      - ./sqlsrv-data:/var/lib/sqlsrv
+    ports:
+      - "1400:1433"
+    environment:
+      SA_PASSWORD: root
+      ACCEPT_EULA: "Y"

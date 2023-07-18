@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:5.6-apache
 
 # Install selected extensions and other stuff
 RUN apt-get update \
