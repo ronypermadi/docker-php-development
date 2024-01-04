@@ -6,20 +6,20 @@ RUN apt-get update \
   && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # Install dependencies for the operating system software
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  libpng-dev \
-  libjpeg62-turbo-dev \
-  libfreetype6-dev \
-  locales \
-  zip \
-  jpegoptim optipng pngquant gifsicle \
-  vim \
-  libzip-dev \
-  unzip \
-  git \
-  libonig-dev \
-  curl
+# RUN apt-get update && apt-get install -y \
+#   build-essential \
+#   libpng-dev \
+#   libjpeg62-turbo-dev \
+#   libfreetype6-dev \
+#   locales \
+#   zip \
+#   jpegoptim optipng pngquant gifsicle \
+#   vim \
+#   libzip-dev \
+#   unzip \
+#   git \
+#   libonig-dev \
+#   curl
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -47,12 +47,10 @@ RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install extensions for php
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install intl mysqli pdo
+RUN docker-php-ext-install pdo_mysql mbstring
+RUN docker-php-ext-install mysqli pdo
 
 # Install extensions for pgsql
-RUN apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql
+# RUN apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql
 
 RUN a2enmod rewrite

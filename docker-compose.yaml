@@ -53,7 +53,7 @@ services:
 
   sqlsrv:
     container_name: sqlsrv
-    image: microsoft/mssql-server-linux:2017-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     volumes:
       - ./sqlsrv-data:/var/lib/sqlsrv
     ports:
