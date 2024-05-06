@@ -29,30 +29,34 @@ RUN apt-get update \
   && apt-get -y install git \
   && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# Install MS ODBC Driver for SQL Server
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-  && apt-get update \
-  && apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev \
-  && pecl install sqlsrv \
-  && pecl install pdo_sqlsrv \
-  && echo "extension=pdo_sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini \
-  && echo "extension=sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-sqlsrv.ini \
-  && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+  RUN apt-get update && apt-get install -y gnupg2
 
-# Change Open SSL version to 1.0
-RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install extensions for php
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install intl mysqli pdo
-
-# Install extensions for pgsql
-RUN apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql
-
-RUN a2enmod rewrite
+  ENV ACCEPT_EULA=Y
+  
+  RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+  
+  RUN curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
+  
+  # Update package lists and install dependencies
+  RUN apt-get update && apt-get install -y \
+      unixodbc-dev \
+      unixodbc \
+      msodbcsql17
+  
+  # Install pdo_sqlsrv extension
+  RUN pecl install sqlsrv-5.7.1preview pdo_sqlsrv-5.7.1preview
+  RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
+  
+  # Install Composer
+  RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  
+  # Install extensions for php
+  RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+  RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+  RUN docker-php-ext-install gd
+  RUN docker-php-ext-install intl mysqli pdo
+  
+  # Install extensions for pgsql
+  RUN apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql pgsql
+  
+  RUN a2enmod rewrite
