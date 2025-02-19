@@ -1,6 +1,16 @@
 version: '3'
 services:
 
+  php56:
+    container_name: php56
+    build:
+      context: .
+      dockerfile: ./docker-files/PHP56.Dockerfile
+    ports:
+      - "8056:80"
+    volumes:
+      - ./www/php56:/var/www/html/
+
   php74:
     container_name: php74
     build:
@@ -21,6 +31,16 @@ services:
     volumes:
       - ./www/php82:/var/www/html/
 
+  mysql8:
+    container_name: mysql8
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql8-data:/var/lib/mysql
+    ports:
+      - 3301:3306
+
   mariadb:
     container_name: mariadb
     image: mariadb:10.9.4
@@ -40,14 +60,3 @@ services:
       - ./pgsql-data:/var/lib/pgsql
     ports:
       - 5400:5432
-
-  # sqlsrv:
-  #   container_name: sqlsrv
-  #   image: mcr.microsoft.com/mssql/server:2019-latest
-  #   volumes:
-  #     - ./sqlsrv-data:/var/lib/sqlsrv
-  #   ports:
-  #     - "1400:1433"
-  #   environment:
-  #     SA_PASSWORD: root
-  #     ACCEPT_EULA: "Y"
